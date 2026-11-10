@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>SENAI Parking | Meu Perfil</title>
+  <link rel="stylesheet" href="css/style.css?v=20261028_v3">
+  <script>
+    (function() {
+      if (localStorage.getItem('senaiTheme') === 'dark') {
+        document.documentElement.classList.add('dark-mode');
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <div class="topbar">
+    <a class="brand" href="painel.html">
+      <div class="brand-mark">S</div>
+      <div>
+        SENAI Parking
+        <small>Blumenau • Perfil do Usuário</small>
+      </div>
+    </a>
+
+    <nav class="topnav">
+      <a href="painel.html">Painel</a>
+      <a href="agendar.html">Agendar</a>
+      <a href="veiculos.html">Meu veículo</a>
+      <a href="minhas-vagas.html">Minhas vagas</a>
+      <a href="sancoes.html">Sanções</a>
+      <a class="active" href="perfil.html">Meu perfil</a>
+      <a href="sobre.html">Sobre</a>
+    </nav>
+
+    <div class="topbar-right">
+      <button type="button" class="btn-theme-toggle" id="themeToggle" onclick="alternarTema()" title="Alternar modo claro / escuro">🌙</button>
+      <a href="perfil.html" class="user-badge" id="userBadge" style="text-decoration:none; cursor:pointer;" title="Ver perfil">
+        <div class="user-badge-icon" id="userBadgeIcon">U</div>
+        <span id="userBadgeName">Usuário</span>
+      </a>
+      <button type="button" class="btn-sair" onclick="fazerLogout()">Sair</button>
+    </div>
+  </div>
+
+  <div class="page">
+    <main class="content" style="max-width:1100px; margin:0 auto; width:100%;">
+      <div class="title-row" style="margin-bottom:20px; align-items:flex-end;">
+        <div>
+          <div class="eyebrow">Minha Conta &amp; Segurança</div>
+          <div class="title">Perfil do Usuário</div>
+          <div class="subtitle">Consulte suas informações cadastrais, tempo de uso e configurações de segurança da conta.</div>
+        </div>
+        <div>
+          <button type="button" class="notification-badge-btn" onclick="abrirModalNotificacoes()" title="Visualizar histórico de e-mails enviados">
+            <span>📬</span> E-mails &amp; Notificações (<strong id="notificacoesCount">0</strong>)
+          </button>
+        </div>
+      </div>
+
+      <div class="profile-container">
+        <!-- HERO CARD -->
+        <div class="profile-hero">
+          <div class="profile-avatar-big" id="perfilHeroAvatar">U</div>
+          <div class="profile-hero-info">
+            <h1 id="perfilHeroNome">Carregando...</h1>
+            <p><span id="perfilHeroLogin">@usuario</span> • <span id="perfilHeroMembroBadge" style="color:var(--blue); font-weight:600;">Carregando histórico...</span></p>
+          </div>
+        </div>
+
+        <!-- METRIC CARDS -->
+        <div class="grid g3">
+          <div class="card pad metric blue">
+            <div class="label">Tempo como usuário</div>
+            <div class="num" id="perfilDiasMembro" style="font-size:24px;">—</div>
+            <div class="foot" id="perfilMembroDesdeCurto">Desde —</div>
+          </div>
+          <div class="card pad metric green">
+            <div class="label">Veículos vinculados</div>
+            <div class="num" id="perfilTotalVeiculos">0</div>
+            <div class="foot"><a href="veiculos.html" style="color:inherit; text-decoration:underline;">Gerenciar veículos</a></div>
+          </div>
+          <div class="card pad metric yellow">
+            <div class="label">Agendamentos no histórico</div>
+            <div class="num" id="perfilTotalAgendamentos">0</div>
+            <div class="foot"><a href="minhas-vagas.html" style="color:inherit; text-decoration:underline;">Ver minhas vagas</a></div>
+          </div>
+        </div>
+
+        <!-- DADOS CADASTRAIS -->
+        <section class="profile-section-card">
+          <h2>
+            <span>Informações da Conta</span>
+            <span style="font-size:12px; font-weight:normal; color:var(--muted);">Dados sincronizados com MySQL</span>
+          </h2>
+          <div class="profile-info-grid">
+            <div class="profile-info-item">
+              <span class="item-label">Nome Completo</span>
+              <span class="item-value" id="perfilNome">—</span>
+            </div>
+
+            <div class="profile-info-item">
+              <span class="item-label">Nome de Usuário (Login)</span>
+              <span class="item-value" id="perfilUsuario">—</span>
+            </div>
+
+            <div class="profile-info-item">
+              <span class="item-label">E-mail para Notificações</span>
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                <span class="item-value" id="perfilEmail" style="word-break:break-all;">—</span>
+                <button type="button" class="btn-eye-toggle" onclick="toggleEditarEmail()" id="btnEditarEmail">✏️ Alterar</button>
+              </div>
+              <!-- Form inline de alteração de e-mail -->
+              <form id="formAtualizarEmail" style="display:none; margin-top:8px; gap:8px;" onsubmit="salvarNovoEmail(event)">
+                <input type="email" id="novoEmailInput" required placeholder="novo@email.com" style="width:100%; padding:8px 10px; font-size:13px; border-radius:6px; border:1px solid #cbd5e1;">
+                <div style="display:flex; gap:6px; margin-top:6px;">
+                  <button type="submit" class="btn btn-primary" style="padding:6px 12px; font-size:12px;">Salvar</button>
+                  <button type="button" class="btn btn-light" style="padding:6px 12px; font-size:12px;" onclick="toggleEditarEmail()">Cancelar</button>
+                </div>
+              </form>
+            </div>
+
+            <div class="profile-info-item">
+              <span class="item-label">Cliente / Usuário Desde</span>
+              <span class="item-value" id="perfilCriadoEm">—</span>
+            </div>
+
+            <div class="profile-info-item">
+              <span class="item-label">Senha Cadastrada</span>
+              <div class="password-display-wrapper">
+                <span class="password-display-text" id="perfilSenhaDisplay">••••••••</span>
+                <button type="button" class="btn-eye-toggle" id="btnToggleSenha" onclick="alternarExibicaoSenha()">
+                  👁 Ver senha
+                </button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ALTERAR SENHA -->
+        <section class="profile-section-card">
+          <h2>
+            <span>Segurança: Alterar Senha de Acesso</span>
+          </h2>
+          <form id="formAlterarSenha" style="max-width:550px; display:grid; gap:14px;">
+            <div class="form-group">
+              <label for="senhaAtual" style="display:block; font-size:13px; font-weight:700; margin-bottom:6px;">Senha Atual</label>
+              <input type="password" id="senhaAtual" required placeholder="Digite sua senha atual" style="width:100%; padding:10px 14px; border:1px solid #d1d5db; border-radius:8px; font-size:14px;">
+            </div>
+            <div class="grid g2" style="gap:12px;">
+              <div class="form-group">
+                <label for="novaSenha" style="display:block; font-size:13px; font-weight:700; margin-bottom:6px;">Nova Senha</label>
+                <input type="password" id="novaSenha" required placeholder="Nova senha (mínimo 4 dígitos)" style="width:100%; padding:10px 14px; border:1px solid #d1d5db; border-radius:8px; font-size:14px;">
+              </div>
+              <div class="form-group">
+                <label for="confirmaNovaSenha" style="display:block; font-size:13px; font-weight:700; margin-bottom:6px;">Confirmar Nova Senha</label>
+                <input type="password" id="confirmaNovaSenha" required placeholder="Repita a nova senha" style="width:100%; padding:10px 14px; border:1px solid #d1d5db; border-radius:8px; font-size:14px;">
+              </div>
+            </div>
+            <div>
+              <button type="submit" class="btn btn-primary" id="btnSalvarSenha">Atualizar senha</button>
+            </div>
+          </form>
+        </section>
+
+        <!-- ZONA DE PERIGO PROFISSIONAL -->
+        <section class="danger-zone-pro">
+          <div class="danger-zone-pro-text">
+            <div class="danger-zone-pro-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              Zona de Perigo Crítica
+            </div>
+            <h2>Exclusão Definitiva de Conta</h2>
+            <p>
+              Ao encerrar sua conta, seus dados cadastrais, veículos associados e todo o histórico de reservas serão removidos permanentemente do banco de dados MySQL. <strong>Esta operação é irreversível.</strong>
+            </p>
+          </div>
+          <div>
+            <button type="button" class="btn-open-danger-modal" onclick="abrirModalExclusao()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+              Encerrar e Apagar Conta...
+            </button>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <!-- =====================================================
+       MODAL DE SEGURANÇA PARA EXCLUSÃO DE CONTA
+       ===================================================== -->
+  <div class="modal-overlay" id="modalExclusaoConta">
+    <div class="modal-box">
+      <div class="modal-header-danger">
+        <h3>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          Confirmar Exclusão Definitiva
+        </h3>
+        <button type="button" class="modal-close-btn" onclick="fecharModalExclusao()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:14px; line-height:1.5; margin-top:0;">
+          Você está prestes a excluir permanentemente a conta de <strong id="modalExclusaoNome">Usuário</strong> (login: <code id="modalExclusaoUsuario">@usuario</code>).
+        </p>
+
+        <div class="danger-bullets">
+          <strong>O que acontecerá imediatamente:</strong>
+          <ul>
+            <li>Seu usuário e senha serão apagados da base de dados;</li>
+            <li>Todos os seus veículos cadastrados serão removidos;</li>
+            <li>Seus agendamentos ativos e passados serão excluídos;</li>
+            <li>Sua sessão será encerrada e você será desconectado.</li>
+          </ul>
+        </div>
+
+        <div style="margin-bottom:16px;">
+          <label class="checkbox-confirm-label" style="display:flex; align-items:flex-start; gap:10px; cursor:pointer; font-size:13px; font-weight:600; color:#dc2626;">
+            <input type="checkbox" id="checkConfirmaExclusao" style="width:18px; height:18px; margin-top:2px; accent-color:#dc2626;">
+            <span>Estou ciente de que esta ação é permanente e aceito apagar todos os meus dados.</span>
+          </label>
+        </div>
+
+        <div class="delete-field-group">
+          <label for="senhaConfirmacaoExclusao" style="display:block; font-size:13px; font-weight:700; margin-bottom:6px;">
+            Digite sua senha atual para autorizar a exclusão:
+          </label>
+          <input type="password" id="senhaConfirmacaoExclusao" placeholder="Sua senha de acesso" autocomplete="current-password" style="width:100%; padding:10px 14px; border:1px solid #d1d5db; border-radius:8px; font-size:14px;">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-light" onclick="fecharModalExclusao()">Cancelar</button>
+        <button type="button" id="btnExcluirConta" class="btn-delete-account" style="width:auto; padding:10px 20px;" disabled>
+          <span id="btnExcluirIcon">🔒</span> Sim, apagar minha conta
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       MODAL DE CENTRAL DE E-MAILS & NOTIFICAÇÕES
+       ===================================================== -->
+  <div class="modal-overlay" id="modalNotificacoes">
+    <div class="modal-box" style="max-width:650px;">
+      <div class="modal-header-danger" style="background:var(--blue3); border-bottom-color:var(--line);">
+        <h3 style="color:var(--blue);">
+          📬 Central de Notificações por E-mail
+        </h3>
+        <button type="button" class="modal-close-btn" onclick="fecharModalNotificacoes()">✕</button>
+      </div>
+      <div class="modal-body">
+        <p style="font-size:13px; color:var(--muted); margin-top:0;">
+          Confira o histórico de notificações e e-mails gerados para sua conta (reservas de vagas, confirmações e alertas de segurança):
+        </p>
+
+        <div id="listaNotificacoesEmail" class="email-list-wrap">
+          <div style="text-align:center; padding:30px; color:var(--muted);">Carregando notificações...</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" onclick="fecharModalNotificacoes()">Fechar</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="js/app.js?v=20261028_v3"></script>
+</body>
+</html>

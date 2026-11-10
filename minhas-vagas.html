@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>SENAI Parking | Minhas vagas</title>
+  <link rel="stylesheet" href="css/style.css?v=20261028_v3">
+  <script>
+    (function() {
+      if (localStorage.getItem('senaiTheme') === 'dark') {
+        document.documentElement.classList.add('dark-mode');
+      }
+    })();
+  </script>
+</head>
+<body>
+  <!-- Barra Superior -->
+  <div class="topbar">
+    <a class="brand" href="painel.html">
+      <div class="brand-mark">S</div>
+      <div>SENAI Parking<small>Blumenau • Reservas</small></div>
+    </a>
+    <nav class="topnav">
+      <a href="painel.html">Painel</a>
+      <a href="agendar.html">Agendar</a>
+      <a href="veiculos.html">Meu veículo</a>
+      <a class="active" href="minhas-vagas.html">Minhas vagas</a>
+      <a href="sancoes.html">Sanções</a>
+      <a href="perfil.html">Meu perfil</a>
+      <a href="sobre.html">Sobre</a>
+    </nav>
+    <div class="topbar-right">
+      <button type="button" class="btn-theme-toggle" id="themeToggle" onclick="alternarTema()" title="Alternar modo claro / escuro">🌙</button>
+      <a href="perfil.html" class="user-badge" id="userBadge" style="text-decoration:none; cursor:pointer;" title="Ver meu perfil">
+        <div class="user-badge-icon" id="userBadgeIcon">U</div>
+        <span id="userBadgeName">Usuário</span>
+      </a>
+      <button type="button" class="btn-sair" onclick="fazerLogout()">Sair</button>
+    </div>
+  </div>
+
+  <!-- Conteúdo Principal -->
+  <div class="page">
+    <main class="content" style="max-width:1200px; margin:0 auto; width:100%;">
+      <div class="title-row">
+        <div>
+          <div class="eyebrow">Reservas</div>
+          <div class="title">Minhas vagas</div>
+          <div class="subtitle">Gerencie os agendamentos registrados no banco de dados.</div>
+        </div>
+        <a href="agendar.html" class="btn btn-primary">Novo agendamento</a>
+      </div>
+
+      <section class="card pad">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Vaga</th>
+              <th>Bloco</th>
+              <th>Veículo / Placa</th>
+              <th>Data</th>
+              <th>Horário</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="reservationTable"></tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+
+  <!-- Componentes de Toast e Scripts -->
+  <div id="toast" class="toast"></div>
+  <script src="js/app.js?v=20261103_v3"></script>
+</body>
+</html>
+

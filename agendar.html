@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>SENAI Parking | Agendar</title>
+    <link rel="stylesheet" href="css/style.css?v=20261028_v3">
+    <script>
+      (function() {
+        if (localStorage.getItem('senaiTheme') === 'dark') {
+          document.documentElement.classList.add('dark-mode');
+        }
+      })();
+    </script>
+  </head>
+  <body class="page-agendamento">
+    <div class="topbar">
+      <a class="brand" href="painel.html">
+        <div class="brand-mark">S</div>
+        <div>SENAI Parking<small>Blumenau • Agendamento</small></div>
+      </a>
+      <nav class="topnav">
+        <a href="painel.html">Painel</a>
+        <a class="active" href="agendar.html">Agendar</a>
+        <a href="veiculos.html">Meu veículo</a>
+        <a href="minhas-vagas.html">Minhas vagas</a>
+        <a href="sancoes.html">Sanções</a>
+        <a href="perfil.html">Meu perfil</a>
+        <a href="sobre.html">Sobre</a>
+      </nav>
+      <div class="topbar-right">
+        <button type="button" class="btn-theme-toggle" id="themeToggle" onclick="alternarTema()" title="Alternar modo claro / escuro">🌙</button>
+        <a href="perfil.html" class="user-badge" id="userBadge" style="text-decoration:none; cursor:pointer;" title="Ver meu perfil">
+          <div class="user-badge-icon" id="userBadgeIcon">U</div>
+          <span id="userBadgeName">Usuário</span>
+        </a>
+        <button type="button" class="btn-sair" onclick="fazerLogout()">Sair</button>
+      </div>
+    </div>
+    <div class="page">
+      <main class="content" style="max-width:1200px; margin:0 auto; width:100%;">
+        <div class="title-row">
+          <div>
+            <div class="eyebrow">Reserva de vaga</div>
+            <div class="title">Agendar estacionamento</div>
+            <div class="subtitle">Escolha o bloco e selecione uma vaga na barra ao lado do mapa.</div>
+          </div>
+        </div>
+        <div class="map-layout">
+          <section class="card map-card">
+            <div class="map-toolbar">
+              <div class="switch">
+                <button class="active" data-block="H">Bloco H</button>
+                <button data-block="A">Bloco A</button>
+                <button data-block="C">Bloco C</button>
+              </div>
+              <div class="legend">
+                <span><i class="i-green"></i>Livre e agendável</span>
+                <span><i class="i-red"></i>Ocupada</span>
+                <span><i class="i-yellow"></i>Já agendada</span>
+              </div>
+            </div>
+            <div id="map" class="map-wrap"></div>
+          </section>
+          <aside class="card detail">
+            <div class="spot-selector-panel">
+              <div class="eyebrow">Selecione uma vaga</div>
+              <label class="selector-label" for="spotSelector">Vaga</label>
+              <select id="spotSelector" class="spot-selector">
+                <option value="">Selecione uma vaga...</option>
+              </select>
+              
+              <div class="selector-hint">O mapa é apenas visual. A seleção e o agendamento são feitos nesta barra lateral.</div>
+            </div>
+            <div id="spotDetail">
+              <div class="empty">Selecione uma vaga na barra acima para visualizar disponibilidade.</div>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+    <div id="toast" class="toast"></div>
+    <script src="js/app.js?v=20261103_v3"></script>
+  </body>
+</html>
+

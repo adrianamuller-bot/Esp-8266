@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>SENAI Parking | Sanções</title>
+    <link rel="stylesheet" href="css/style.css?v=20261028_v3">
+    <script>
+      (function() {
+        if (localStorage.getItem('senaiTheme') === 'dark') {
+          document.documentElement.classList.add('dark-mode');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="topbar">
+      <a class="brand" href="painel.html">
+        <div class="brand-mark">S</div>
+        <div>SENAI Parking<small>Blumenau • Sanções</small></div>
+      </a>
+      <nav class="topnav">
+        <a href="painel.html">Painel</a>
+        <a href="agendar.html">Agendar</a>
+        <a href="veiculos.html">Meu veículo</a>
+        <a href="minhas-vagas.html">Minhas vagas</a>
+        <a class="active" href="sancoes.html">Sanções</a>
+        <a href="perfil.html">Meu perfil</a>
+        <a href="sobre.html">Sobre</a>
+      </nav>
+      <div class="topbar-right">
+        <button type="button" class="btn-theme-toggle" id="themeToggle" onclick="alternarTema()" title="Alternar modo claro / escuro">🌙</button>
+        <a href="perfil.html" class="user-badge" id="userBadge" style="text-decoration:none; cursor:pointer;" title="Ver meu perfil">
+          <div class="user-badge-icon" id="userBadgeIcon">U</div>
+          <span id="userBadgeName">Usuário</span>
+        </a>
+        <button type="button" class="btn-sair" onclick="fazerLogout()">Sair</button>
+      </div>
+    </div>
+    <div class="page">
+      <main class="content" style="max-width:1200px; margin:0 auto; width:100%;">
+        <div class="title-row">
+          <div>
+            <div class="eyebrow">Controle de comparecimento</div>
+            <div class="title">Sanções</div>
+            <div class="subtitle">Registre ocorrências quando o usuário não comparecer ao horário reservado e acompanhe a regularização da sanção.</div>
+          </div>
+        </div>
+        <div class="grid g4">
+          <div class="card pad metric red">
+            <div class="label">Ocorrências abertas</div>
+            <div class="num" data-sancoes>0</div>
+            <div class="foot">Ainda não encerradas</div>
+          </div>
+          <div class="card pad metric blue">
+            <div class="label">Tolerância</div>
+            <div class="num">15</div>
+            <div class="foot">minutos após o horário</div>
+          </div>
+          <div class="card pad metric yellow">
+            <div class="label">1ª ocorrência</div>
+            <div class="num" style="font-size:24px">Aviso</div>
+            <div class="foot">Advertência</div>
+          </div>
+          <div class="card pad metric blue">
+            <div class="label">Reincidência</div>
+            <div class="num" style="font-size:24px">24h+</div>
+            <div class="foot">Bloqueio progressivo</div>
+          </div>
+        </div>
+        <div class="grid g2" style="margin-top:16px">
+          <section class="card pad">
+            <div class="section-head">
+              <h2>Agendamentos</h2>
+              <span>Marcar não comparecimento</span>
+            </div>
+            <div id="noShowList" class="list"></div>
+          </section>
+          <section class="card pad">
+            <div class="section-head">
+              <h2>Regra do protótipo</h2>
+              <span>Não comparecimento + regularização</span>
+            </div>
+            <div class="rule-box">
+              <p><strong>Até 15 min:</strong> a reserva continua dentro da tolerância.</p>
+              <p><strong>Após 15 min:</strong> o responsável pode registrar o não comparecimento e abrir uma ocorrência.</p>
+              <p><strong>1ª ocorrência:</strong> advertência.</p>
+              <p><strong>2ª ocorrência:</strong> bloqueio por 24 horas.</p>
+              <p><strong>3ª ocorrência:</strong> bloqueio por 7 dias.</p>
+              <p><strong>4ª ocorrência:</strong> bloqueio por 30 dias.</p>
+              <p><strong>Regularização:</strong> quando a ocorrência exigir regularização, o usuário escolhe PIX, cartão ou entrega de 1 kg de alimento.</p>
+              <p><strong>PIX ou cartão:</strong> após a confirmação do pagamento, a equipe atualiza o status da ocorrência no sistema.</p>
+              <p><strong>1 kg de alimento:</strong> o usuário deve levar 1 kg de alimento ao SENAI. A equipe confere a entrega e faz a mudança do status da sanção no sistema.</p>
+              <small>As regras e os procedimentos de regularização são demonstrativos para o protótipo e podem ser ajustados pela equipe/SENAI.</small>
+            </div>
+          </section>
+        </div>
+
+        <section class="card pad" style="margin-top:16px">
+          <div class="section-head">
+            <h2>Pagamento da sanção</h2>
+            <span>Escolha uma forma de regularização</span>
+          </div>
+
+          <div class="payment-grid" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px">
+            <label class="payment-option" style="border:1px solid #d8e1e8;border-radius:12px;padding:16px;cursor:pointer;background:#fff;display:block">
+              <input type="radio" name="paymentMethod" value="pix" style="margin-right:8px">
+              <strong>PIX</strong>
+              <div style="font-size:13px;color:var(--muted);margin-top:6px">Pagamento financeiro por PIX. A confirmação deve ser registrada no sistema.</div>
+            </label>
+
+            <label class="payment-option" style="border:1px solid #d8e1e8;border-radius:12px;padding:16px;cursor:pointer;background:#fff;display:block">
+              <input type="radio" name="paymentMethod" value="cartao" style="margin-right:8px">
+              <strong>Cartão</strong>
+              <div style="font-size:13px;color:var(--muted);margin-top:6px">Pagamento com cartão, conforme o procedimento definido pelo SENAI.</div>
+            </label>
+
+            <label class="payment-option" style="border:1px solid #d8e1e8;border-radius:12px;padding:16px;cursor:pointer;background:#fff;display:block">
+              <input type="radio" name="paymentMethod" value="alimento" style="margin-right:8px">
+              <strong>1 kg de alimento</strong>
+              <div style="font-size:13px;color:var(--muted);margin-top:6px">Entrega presencial para regularização da sanção.</div>
+            </label>
+          </div>
+
+          <div id="paymentInstructions" class="rule-box" style="margin-top:14px">
+            <strong>Selecione uma forma de pagamento</strong>
+            <p style="margin-bottom:0">Escolha uma das opções acima para visualizar as instruções.</p>
+          </div>
+
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px">
+            <button type="button" class="btn btn-primary" id="savePaymentMethod">Registrar escolha</button>
+            <span id="paymentStatus" style="font-size:13px;color:var(--muted)"></span>
+          </div>
+        </section>
+
+        <section class="card pad" style="margin-top:16px">
+          <div class="section-head">
+            <h2>Histórico de ocorrências</h2>
+            <span>Registro local do protótipo</span>
+          </div>
+          <div class="table-scroll">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Ocorrência</th>
+                  <th>Vaga</th>
+                  <th>Data</th>
+                  <th>Motivo</th>
+                  <th>Sanção</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody id="sanctionTable"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+    <div id="toast" class="toast"></div>
+
+    <script>
+      (function () {
+        const instructions = document.getElementById('paymentInstructions');
+        const saveButton = document.getElementById('savePaymentMethod');
+        const status = document.getElementById('paymentStatus');
+        const methods = document.querySelectorAll('input[name="paymentMethod"]');
+
+        function updateInstructions(method) {
+          if (!instructions) return;
+
+          if (method === 'pix') {
+            instructions.innerHTML =
+              '<strong>PIX</strong>' +
+              '<p>Use o meio de pagamento PIX definido pelo SENAI. Depois da confirmação do pagamento, o operador deverá atualizar o status da sanção no sistema.</p>' +
+              '<small>Neste protótipo, a confirmação do pagamento é manual.</small>';
+          } else if (method === 'cartao') {
+            instructions.innerHTML =
+              '<strong>Cartão</strong>' +
+              '<p>Realize o pagamento com cartão conforme o procedimento indicado pelo SENAI. Depois da confirmação, o operador deverá atualizar o status da sanção no sistema.</p>' +
+              '<small>Neste protótipo, a confirmação do pagamento é manual.</small>';
+          } else if (method === 'alimento') {
+            instructions.innerHTML =
+              '<strong>1 kg de alimento</strong>' +
+              '<p><strong>Não é necessário realizar o pagamento pelo site.</strong> Leve 1 kg de alimento ao SENAI e apresente a entrega à equipe responsável.</p>' +
+              '<p>Após conferir a doação, a equipe do SENAI deverá realizar a mudança do status da sanção no sistema para registrar a regularização.</p>' +
+              '<small>O alimento deve ser entregue presencialmente no local indicado pelo SENAI.</small>';
+          } else {
+            instructions.innerHTML =
+              '<strong>Selecione uma forma de pagamento</strong>' +
+              '<p style="margin-bottom:0">Escolha uma das opções acima para visualizar as instruções.</p>';
+          }
+        }
+
+        methods.forEach(function (input) {
+          input.addEventListener('change', function () {
+            updateInstructions(input.value);
+            status.textContent = '';
+          });
+        });
+
+        if (saveButton) {
+          saveButton.addEventListener('click', function () {
+            const selected = document.querySelector('input[name="paymentMethod"]:checked');
+            if (!selected) {
+              status.textContent = 'Selecione uma forma de pagamento primeiro.';
+              status.style.color = '#b42318';
+              return;
+            }
+
+            const labels = {
+              pix: 'PIX',
+              cartao: 'Cartão',
+              alimento: '1 kg de alimento'
+            };
+
+            localStorage.setItem('senaiPaymentMethod', JSON.stringify({
+              method: selected.value,
+              label: labels[selected.value],
+              updatedAt: new Date().toISOString(),
+              status: selected.value === 'alimento'
+                ? 'Aguardando conferência do SENAI'
+                : 'Aguardando confirmação do pagamento'
+            }));
+
+            status.textContent = selected.value === 'alimento'
+              ? 'Escolha registrada. Leve 1 kg de alimento ao SENAI para a equipe atualizar a sanção.'
+              : 'Escolha registrada. A sanção deve ser confirmada pela equipe após o pagamento.';
+            status.style.color = '#1f6b4f';
+          });
+        }
+      })();
+    </script>
+    <script src="js/app.js?v=20261103_v3"></script>
+  </body>
+</html>
+

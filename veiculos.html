@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+  <title>SENAI Parking | Veículos</title>
+  <link rel="stylesheet" href="css/style.css?v=20261028_v3">
+  <script>
+    (function() {
+      if (localStorage.getItem('senaiTheme') === 'dark') {
+        document.documentElement.classList.add('dark-mode');
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <div class="topbar">
+    <a class="brand" href="painel.html">
+      <div class="brand-mark">S</div>
+      <div>
+        SENAI Parking
+        <small>Blumenau • Agendamento</small>
+      </div>
+    </a>
+
+    <nav class="topnav">
+      <a href="painel.html">Painel</a>
+      <a href="agendar.html">Agendar</a>
+      <a class="active" href="veiculos.html">Meu veículo</a>
+      <a href="minhas-vagas.html">Minhas vagas</a>
+      <a href="sancoes.html">Sanções</a>
+      <a href="perfil.html">Meu perfil</a>
+      <a href="sobre.html">Sobre</a>
+    </nav>
+
+    <div class="topbar-right">
+      <button type="button" class="btn-theme-toggle" id="themeToggle" onclick="alternarTema()" title="Alternar modo claro / escuro">🌙</button>
+      <a href="perfil.html" class="user-badge" id="userBadge" style="text-decoration:none; cursor:pointer;" title="Ver meu perfil">
+        <div class="user-badge-icon" id="userBadgeIcon">U</div>
+        <span id="userBadgeName">Usuário</span>
+      </a>
+      <button type="button" class="btn-sair" onclick="fazerLogout()">Sair</button>
+    </div>
+  </div>
+
+  <div class="page">
+    <main class="content" style="max-width:1200px; margin:0 auto; width:100%;">
+      <div class="vehicle-page">
+        <div class="vehicle-container">
+          <div class="page-header">
+            <div>
+              <h1>Veículos</h1>
+              <p>Consulte e cadastre os veículos vinculados ao seu usuário no MySQL.</p>
+            </div>
+          </div>
+
+          <!-- ============================= -->
+          <!-- MEU VEÍCULO -->
+          <!-- ============================= -->
+          <div class="vehicle-grid">
+            <section class="vehicle-card">
+              <h2>Meu veículo</h2>
+              <div id="meuVeiculo" class="vehicle-info">
+                <div class="empty-message">Carregando veículos do banco de dados...</div>
+              </div>
+            </section>
+
+            <!-- ============================= -->
+            <!-- CADASTRAR VEÍCULO -->
+            <!-- ============================= -->
+            <section class="vehicle-card">
+              <h2>Cadastrar veículo</h2>
+              <form id="vehicleForm">
+                <div class="field">
+                  <label for="placa">Placa</label>
+                  <input type="text" id="placa" placeholder="Ex.: ABC1D23" maxlength="8" required>
+                </div>
+
+                <div class="field">
+                  <label for="cor">Cor</label>
+                  <select id="cor" name="cor" required>
+                    <option value="">Selecione uma cor...</option>
+                    <option value="Preto">Preto</option>
+                    <option value="Branco">Branco</option>
+                    <option value="Prata">Prata</option>
+                    <option value="Cinza">Cinza</option>
+                    <option value="Vermelho">Vermelho</option>
+                    <option value="Azul">Azul</option>
+                    <option value="Verde">Verde</option>
+                    <option value="Amarelo">Amarelo</option>
+                    <option value="Marrom">Marrom</option>
+                    <option value="Bege">Bege</option>
+                    <option value="Outra">Outra</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="marca">Marca</label>
+                  <select id="marca" required>
+                    <option value="">Selecione uma marca...</option>
+                  </select>
+                </div>
+
+                <div class="field">
+                  <label for="modelo">Modelo</label>
+                  <select id="modelo" required disabled>
+                    <option value="">Primeiro selecione uma marca...</option>
+                  </select>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%;">
+                  Cadastrar veículo no banco
+                </button>
+              </form>
+            </section>
+          </div>
+
+          <!-- ============================= -->
+          <!-- MARCAS -->
+          <!-- ============================= -->
+          <section class="vehicle-card list-section" style="margin-top:24px;">
+            <h2>Marcas cadastradas</h2>
+            <div id="listaMarcas" class="data-list">
+              <div class="empty-message">Carregando marcas...</div>
+            </div>
+          </section>
+
+          <!-- ============================= -->
+          <!-- MODELOS -->
+          <!-- ============================= -->
+          <section class="vehicle-card list-section" style="margin-top:24px;">
+            <h2>Modelos cadastrados</h2>
+            <div id="listaModelos" class="data-list">
+              <div class="empty-message">Carregando modelos...</div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <div id="toast" class="toast"></div>
+  <script src="js/app.js?v=20261103_v3"></script>
+</body>
+</html>
+

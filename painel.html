@@ -1,0 +1,194 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>SENAI Parking | Painel</title>
+    <link rel="stylesheet" href="css/style.css?v=20261028_v3">
+    <script>
+      (function() {
+        if (localStorage.getItem('senaiTheme') === 'dark') {
+          document.documentElement.classList.add('dark-mode');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="topbar">
+      <a class="brand" href="painel.html">
+        <div class="brand-mark">S</div>
+        <div>SENAI Parking<small>Blumenau • Monitoramento</small></div>
+      </a>
+      <nav class="topnav">
+        <a class="active" href="painel.html">Painel</a>
+        <a href="agendar.html">Agendar</a>
+        <a href="veiculos.html">Meu veículo</a>
+        <a href="minhas-vagas.html">Minhas vagas</a>
+        <a href="sancoes.html">Sanções</a>
+        <a href="perfil.html">Meu perfil</a>
+        <a href="sobre.html">Sobre</a>
+      </nav>
+      <div class="topbar-right">
+        <button type="button" class="btn-theme-toggle" id="themeToggle" onclick="alternarTema()" title="Alternar modo claro / escuro">🌙</button>
+        <a href="perfil.html" class="user-badge" id="userBadge" style="text-decoration:none; cursor:pointer;" title="Ver meu perfil">
+          <div class="user-badge-icon" id="userBadgeIcon">U</div>
+          <span id="userBadgeName">Usuário</span>
+        </a>
+        <button type="button" class="btn-sair" onclick="fazerLogout()">Sair</button>
+      </div>
+    </div>
+    <div class="page">
+      <main class="content" style="max-width:1200px; margin:0 auto; width:100%;">
+        <div class="title-row">
+          <div>
+            <div class="eyebrow">Monitoramento em tempo real</div>
+            <div class="title">Painel de estacionamento</div>
+            <div class="subtitle">Acompanhe a ocupação dos blocos A, C e H e encontre uma vaga sem rodar pela unidade.</div>
+          </div>
+          <a class="btn btn-primary" href="agendar.html">Visualizar mapa</a>
+        </div>
+        <div class="grid g4">
+          <div class="card pad metric green">
+            <div class="label">Vagas livres</div>
+            <div class="num" data-stat="green">0</div>
+            <div class="foot">Disponíveis agora</div>
+          </div>
+          <div class="card pad metric red">
+            <div class="label">Vagas ocupadas</div>
+            <div class="num" data-stat="red">0</div>
+            <div class="foot">Detectadas no mapa</div>
+          </div>
+          <div class="card pad metric yellow">
+            <div class="label">Vagas agendadas</div>
+            <div class="num" data-stat="yellow">0</div>
+            <div class="foot">Reservas ativas</div>
+          </div>
+          <div class="card pad metric blue">
+            <div class="label">Meus agendamentos</div>
+            <div class="num" data-reservas>0</div>
+            <div class="foot">Neste protótipo</div>
+          </div>
+        </div>
+
+        <!-- MEU VEÍCULO -->
+        <section class="card pad" style="margin-top:16px">
+          <div class="section-head" style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <h2>Meu veículo</h2>
+              <span>Veículo vinculado no banco de dados</span>
+            </div>
+            <a href="veiculos.html" class="btn btn-light" style="font-size:12px; padding:6px 12px;">Gerenciar veículos</a>
+          </div>
+
+          <div class="list" id="painelVeiculoLista">
+            <div class="list-item">
+              <div>
+                <strong>Placa</strong>
+                <div id="veiculoPlaca" style="font-size:12px;color:var(--muted)">
+                  Carregando...
+                </div>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div>
+                <strong>Cor</strong>
+                <div id="veiculoCor" style="font-size:12px;color:var(--muted)">
+                  Carregando...
+                </div>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div>
+                <strong>Modelo</strong>
+                <div id="veiculoModelo" style="font-size:12px;color:var(--muted)">
+                  Carregando...
+                </div>
+              </div>
+            </div>
+
+            <div class="list-item">
+              <div>
+                <strong>Marca</strong>
+                <div id="veiculoMarca" style="font-size:12px;color:var(--muted)">
+                  Carregando...
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div class="grid g2" style="margin-top:16px">
+          <section class="card pad">
+            <div class="section-head">
+              <h2>Blocos monitorados</h2>
+              <span>Selecionados no projeto</span>
+            </div>
+            <div class="list">
+              <div class="list-item">
+                <div>
+                  <strong>Bloco A</strong>
+                  <div style="font-size:12px;color:var(--muted)">Mapa de vagas e disponibilidade</div>
+                </div>
+                <a class="badge blue" href="agendar.html?bloco=A">Abrir mapa</a>
+              </div>
+              <div class="list-item">
+                <div>
+                  <strong>Bloco C</strong>
+                  <div style="font-size:12px;color:var(--muted)">Mapa de vagas e disponibilidade</div>
+                </div>
+                <a class="badge blue" href="agendar.html?bloco=C">Abrir mapa</a>
+              </div>
+              <div class="list-item">
+                <div>
+                  <strong>Bloco H</strong>
+                  <div style="font-size:12px;color:var(--muted)">Mapa de vagas e disponibilidade</div>
+                </div>
+                <a class="badge blue" href="agendar.html?bloco=H">Abrir mapa</a>
+              </div>
+            </div>
+          </section>
+          <section class="card pad">
+            <div class="section-head">
+              <h2>Como funciona</h2>
+              <span>ESP8266 + HC-SR04 + MySQL</span>
+            </div>
+            <div class="list">
+              <div class="list-item">
+                <div>
+                  <strong>1. Sensor identifica</strong>
+                  <div style="font-size:12px;color:var(--muted)">O HC-SR04 mede a distância e identifica a presença de um veículo na vaga.</div>
+                </div>
+              </div>
+              <div class="list-item">
+                <div>
+                  <strong>2. ESP8266 processa</strong>
+                  <div style="font-size:12px;color:var(--muted)">O microcontrolador ESP8266 lê o sensor e aciona o LED RGB físico (Verde = Livre, Vermelho = Ocupada, Amarelo = Agendada).</div>
+                </div>
+              </div>
+              <div class="list-item">
+                <div>
+                  <strong>3. Servidor Web &amp; Banco de Dados</strong>
+                  <div style="font-size:12px;color:var(--muted)">O PHP sincroniza em tempo real com o ESP8266 e persiste leituras, veículos e agendamentos no MySQL.</div>
+                </div>
+              </div>
+              <div class="list-item">
+                <div>
+                  <strong>4. Interface interativa</strong>
+                  <div style="font-size:12px;color:var(--muted)">O sistema exibe o mapa, permite reservar com seu veículo cadastrado e reflete instantaneamente no LED.</div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </main>
+    </div>
+    <div id="toast" class="toast"></div>
+    <script src="js/app.js?v=20261103_v3"></script>
+  </body>
+</html>
+

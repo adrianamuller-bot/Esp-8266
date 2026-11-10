@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>SENAI Parking | Acesso</title>
+    <link rel="stylesheet" href="css/style.css?v=20261028_v3">
+    <script>
+      (function() {
+        if (localStorage.getItem('senaiTheme') === 'dark') {
+          document.documentElement.classList.add('dark-mode');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <div class="login-page">
+      <section class="login-side">
+        <div>
+          <div class="login-kicker">SENAI • Mundo SENAI de Inovação</div>
+          <h1>Estacionamento<br>inteligente.</h1>
+          <p>Consulte as vagas dos blocos A, C e H diretamente no mapa da unidade, veja a situação de cada vaga e faça seu agendamento.</p>
+          <div class="badge blue" style="display:inline-block;margin-top:10px">Protótipo com ESP8266 &amp; MySQL</div>
+        </div>
+        <div style="font-size:12px;color:#cde9fb">Projeto SAGA SENAI de Inovação • Blumenau</div>
+      </section>
+      <section class="login-panel">
+        <div class="login-box">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div class="brand">
+              <div class="brand-mark">S</div>
+              <div>SENAI Parking<small>Gestão de vagas</small></div>
+            </div>
+            <button type="button" class="btn-theme-toggle" id="themeToggle" onclick="alternarTema()" title="Alternar modo claro / escuro">🌙</button>
+          </div>
+          <h2 style="margin-top:28px" id="formTitle">Entrar no sistema</h2>
+          <p id="formSubtitle">Acesse com seu usuário cadastrado no banco de dados.</p>
+
+          <div id="loginErro" style="display:none; color:#dc2626; font-size:13px; margin: 12px 0; background:#fef2f2; padding:10px 14px; border-radius:8px; border:1px solid #fecaca; font-weight:500;"></div>
+          <div id="loginSucesso" style="display:none; color:#16a34a; font-size:13px; margin: 12px 0; background:#f0fdf4; padding:10px 14px; border-radius:8px; border:1px solid #bbf7d0; font-weight:500;"></div>
+
+          <!-- Formulário de Login -->
+          <form id="loginForm">
+            <div class="field">
+              <label for="login">Login / Usuário</label>
+              <input id="login" name="login" placeholder="Ex.: Jefferson ou Rodrigo" complete ="username">
+            </div>
+            <div class="field">
+              <label for="senha">Senha</label>
+              <input type="password" id="senha" name="senha" placeholder="Ex.: 12345" required autocomplete="current-password">
+            </div>
+            <button class="btn btn-primary" id="btnLoginSubmit" type="submit" style="width:100%;margin-top:8px">Acessar painel</button>
+            <div style="margin-top: 16px; text-align: center; font-size: 13px; color: var(--muted);">
+              Não tem uma conta? <a href="#" id="btnShowRegister" style="color:var(--blue); font-weight:600; text-decoration:none;">Criar conta</a>
+            </div>
+          </form>
+
+          <!-- Formulário de Cadastro -->
+          <form id="registerForm" style="display:none;">
+            <div class="field">
+              <label for="regNome">Nome completo</label>
+              <input id="regNome" placeholder="Ex.: Adrian Alex Muller" required>
+            </div>
+            <div class="field">
+              <label for="regUsuario">Usuário / Login</label>
+              <input id="regUsuario" placeholder="Ex.: adrian" required>
+            </div>
+            <div class="field">
+              <label for="regEmail">E-mail para notificações</label>
+              <input type="email" id="regEmail" placeholder="seuemail@exemplo.com">
+            </div>
+            <div class="field">
+              <label for="regSenha">Senha</label>
+              <input type="password" id="regSenha" placeholder="Mínimo 4 caracteres" required>
+            </div>
+            <div class="field">
+              <label for="regConfirma">Confirmar senha</label>
+              <input type="password" id="regConfirma" placeholder="Repita a senha" required>
+            </div>
+            <button class="btn btn-primary" id="btnRegSubmit" type="submit" style="width:100%;margin-top:8px">Criar conta e entrar</button>
+            <div style="margin-top: 16px; text-align: center; font-size: 13px; color: var(--muted);">
+              Já possui conta? <a href="#" id="btnShowLogin" style="color:var(--blue); font-weight:600; text-decoration:none;">Fazer login</a>
+            </div>
+          </form>
+
+          <div style="margin-top:20px; padding-top:14px; border-top:1px solid #e2e8f0; font-size:12px; color:#64748b; line-height: 1.5;">
+          </div>
+        </div>
+      </section>
+    </div>
+    <script src="js/app.js?v=20261028_v3"></script>
+  </body>
+</html>
+
