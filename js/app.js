@@ -588,7 +588,7 @@ function statusFor(spot) {
       return 'yellow';
     }
     if (liveSensor.online && vagaSensor.distancia > 0) {
-      if (vagaSensor.distancia <= 30.0) {
+      if (vagaSensor.distancia <= 8.0) {
         return 'red';
       } else {
         return 'green';
@@ -602,7 +602,7 @@ function statusFor(spot) {
       return 'yellow';
     }
     if (liveSensor.online && liveSensor.distancia > 0) {
-      if (liveSensor.distancia <= 30.0) {
+      if (liveSensor.distancia <= 8.0) {
         return 'red';
       } else {
         return 'green';
