@@ -623,8 +623,66 @@ function renderMap(blockKey, targetId = 'map') {
   const b = parkingBlocks[blockKey];
   const el = document.getElementById(targetId);
   if (!el) return;
-  selected = null;
-  el.innerHTML = `<img src="${b.image}" alt="Mapa ${b.name}">`;
+
+  const spots = b?.spots || [];
+
+  if (!spots.length) {
+    el.innerHTML = `
+      <div style="text-align:center; padding:30px; color:var(--muted); max-width:440px;">
+        <div style="font-size:42px; margin-bottom:12px;">🚧</div>
+        <h3 style="color:var(--text); margin-bottom:8px;">${b?.name || 'Bloco'} sem vagas ativas</h3>
+        <p style="font-size:13px; line-height:1.5;">Nenhuma vaga física está conectada neste bloco no momento. Alterne para o <strong>Bloco H</strong> para visualizar e agendar as vagas com sensores ultrassônicos.</p>
+      </div>
+    `;
+    populateSpotSelector(blockKey);
+    return;
+  }
+
+  // Renderiza a região esquemática das vagas (sem usar foto do bloco)
+  const baysHtml = spots.map(s => {
+    const spotId = s[0];
+    const st = statusFor(s);
+    const label = st === 'green' ? 'Livre' : st === 'red' ? 'Ocupada' : 'Agendada';
+    const isSel = (selected && selected.s[0] === spotId) ? 'selected' : '';
+
+    const vObj = liveSensor?.vagas?.[spotId];
+    const dVal = (vObj && vObj.distancia > 0) ? vObj.distancia : (spotId === 'Vaga 01' ? liveSensor.distancia : 0);
+    const distTxt = liveSensor.online ? (dVal > 0 ? (dVal.toFixed(1) + ' cm') : 'Sem leitura') : 'Desconectado';
+
+    return `
+      <div class="bay-card bay-${st} ${isSel}" id="bayCard_${spotId.replace(/\s+/g, '_')}" onclick="selecionarVagaPeloCard('${spotId}')">
+        <div class="bay-header">
+          <span class="bay-title">${spotId}</span>
+          <span class="bay-indicator ${st}">
+            <i class="i-${st}"></i> ${label}
+          </span>
+        </div>
+        <div class="bay-body">
+          <div class="bay-info-row">
+            <span>Sensor:</span>
+            <strong>${distTxt}</strong>
+          </div>
+          <div class="bay-info-row">
+            <span>Status:</span>
+            <strong>${st === 'green' ? 'Disponível' : (st === 'yellow' ? 'Agendada' : 'Ocupada')}</strong>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="parking-zone-container">
+      <div class="parking-road">
+        <span>🚗 ÁREA DE CIRCULAÇÃO • ESTACIONAMENTO</span>
+        <span>${b?.name || 'Bloco'}</span>
+      </div>
+      <div class="parking-bays">
+        ${baysHtml}
+      </div>
+    </div>
+  `;
+
   populateSpotSelector(blockKey);
 }
 
@@ -1800,7 +1858,7 @@ function pollSensor() {
         const spotId = sel.value || (parkingBlocks[currentBlock]?.spots[0] ? parkingBlocks[currentBlock].spots[0][0] : '');
         if (spotId) {
           const st = statusFor([spotId, 'green']);
-          // Atualiza as opções do select para ambas as vagas
+          // Atualiza as opções do select e os cards visuais das vagas
           parkingBlocks[currentBlock]?.spots?.forEach(sp => {
             const spId = sp[0];
             const spSt = statusFor([spId, 'green']);
@@ -1811,6 +1869,18 @@ function pollSensor() {
               spOpt.textContent = `${spId} — ${spLabel}`;
               spOpt.className = `spot-option ${spSt}`;
               spOpt.style.color = spColor;
+            }
+
+            // Atualiza card visual esquemático em tempo real
+            const bayEl = document.getElementById('bayCard_' + spId.replace(/\s+/g, '_'));
+            if (bayEl) {
+              bayEl.className = `bay-card bay-${spSt} ${(selected && selected.s[0] === spId) ? 'selected' : ''}`;
+              const ind = bayEl.querySelector('.bay-indicator');
+              if (ind) {
+                ind.className = `bay-indicator ${spSt}`;
+                const spLabel = spSt === 'green' ? 'Livre' : spSt === 'red' ? 'Ocupada' : 'Agendada';
+                ind.innerHTML = `<i class="i-${spSt}"></i> ${spLabel}`;
+              }
             }
           });
 
@@ -1912,3 +1982,16 @@ function pageInit() {
 }
 
 document.addEventListener('DOMContentLoaded', pageInit);
+
+
+function selecionarVagaPeloCard(spotId) {
+  const sel = document.getElementById('spotSelector');
+  if (sel) {
+    sel.value = spotId;
+    updateSelectorStatus(spotId, currentBlock);
+    showSelectedFromSelector(spotId, currentBlock);
+    document.querySelectorAll('.bay-card').forEach(c => c.classList.remove('selected'));
+    const card = document.getElementById('bayCard_' + spotId.replace(/\s+/g, '_'));
+    if (card) card.classList.add('selected');
+  }
+}

@@ -484,10 +484,147 @@ a {
   border-radius: 10px;
   overflow: hidden;
   border: 1px solid var(--line);
-  min-height: 540px;
+  min-height: 480px;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 24px;
+}
+
+/* Área Visual das Vagas (Sem Fotos Reais) */
+.parking-zone-container {
+  width: 100%;
+  max-width: 680px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.parking-road {
+  background: #2b3648;
+  border-radius: 8px;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  border-top: 2px dashed #94a3b8;
+  border-bottom: 2px dashed #94a3b8;
+}
+
+.parking-bays {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.bay-card {
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  padding: 20px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.04);
+}
+
+.bay-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+.bay-card.selected {
+  border-color: var(--blue) !important;
+  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.25) !important;
+}
+
+.bay-card.bay-green {
+  border-top: 6px solid var(--green);
+}
+
+.bay-card.bay-red {
+  border-top: 6px solid var(--red);
+}
+
+.bay-card.bay-yellow {
+  border-top: 6px solid var(--yellow);
+}
+
+.bay-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.bay-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.bay-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.bay-indicator.green {
+  background: #e8f8ef;
+  color: var(--green);
+}
+
+.bay-indicator.red {
+  background: #fdecec;
+  color: var(--red);
+}
+
+.bay-indicator.yellow {
+  background: #fff8e6;
+  color: #b45309;
+}
+
+.bay-body {
+  background: rgba(0,0,0,0.02);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.bay-body .bay-info-row {
+  display: flex;
+  justify-content: space-between;
+  color: var(--muted);
+}
+
+.bay-body .bay-info-row strong {
+  color: var(--text);
+}
+
+body.dark-mode .map-wrap {
+  background: #0f172a;
+}
+
+body.dark-mode .bay-card {
+  background: #1e293b;
+  border-color: #334155;
+}
+
+body.dark-mode .bay-body {
+  background: #0f172a;
 }
 
 .map-wrap img {
