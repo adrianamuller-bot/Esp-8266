@@ -1013,5 +1013,103 @@ if ($acao === 'historico') {
     exit;
 }
 
+// -------------------------------------------------------------
+// 13. PAINEL ADMINISTRATIVO: DADOS COMPLETOS (EXCETO SENHAS)
+// -------------------------------------------------------------
+if ($acao === 'admin_dados_gerais') {
+    // 1. Lista de Usuários (sem o campo senha)
+    $resU = $conn->query("SELECT id, nome, usuario, email, criado_em FROM usuarios ORDER BY id DESC");
+    $usuarios = [];
+    if ($resU) {
+        while ($row = $resU->fetch_assoc()) {
+            $usuarios[] = [
+                "id"        => intval($row['id']),
+                "nome"      => $row['nome'],
+                "usuario"   => $row['usuario'],
+                "email"     => !empty($row['email']) ? $row['email'] : ($row['usuario'] . '@senai.br'),
+                "criado_em" => $row['criado_em']
+            ];
+        }
+    }
+
+    // 2. Lista de Veículos com dados do proprietário
+    $resV = $conn->query("SELECT v.id, v.id_usuario, v.placa, v.marca, v.modelo, v.cor, v.data_cadastro, u.nome AS proprietario, u.usuario AS login_proprietario 
+                          FROM veiculos v 
+                          LEFT JOIN usuarios u ON v.id_usuario = u.id 
+                          ORDER BY v.id DESC");
+    $veiculos = [];
+    if ($resV) {
+        while ($row = $resV->fetch_assoc()) {
+            $veiculos[] = [
+                "id"                 => intval($row['id']),
+                "id_usuario"         => intval($row['id_usuario']),
+                "placa"              => $row['placa'],
+                "marca"              => $row['marca'],
+                "modelo"             => $row['modelo'],
+                "cor"                => $row['cor'],
+                "data_cadastro"      => $row['data_cadastro'],
+                "proprietario"       => !empty($row['proprietario']) ? $row['proprietario'] : 'Não identificado',
+                "login_proprietario" => $row['login_proprietario'] ?? ''
+            ];
+        }
+    }
+
+    // 3. Todos os Agendamentos com dados do veículo e usuário
+    $resA = $conn->query("SELECT a.id, a.id_usuario, a.nome, a.placa, a.vaga, a.bloco, a.data_reserva, a.horario, a.data_hora, a.status,
+                                 u.usuario AS login_usuario, u.email AS email_usuario,
+                                 v.modelo AS veiculo_modelo, v.marca AS veiculo_marca
+                          FROM agendamentos a
+                          LEFT JOIN usuarios u ON a.id_usuario = u.id
+                          LEFT JOIN veiculos v ON a.placa = v.placa
+                          ORDER BY a.id DESC");
+    $agendamentos = [];
+    $totalAtivos = 0;
+    if ($resA) {
+        while ($row = $resA->fetch_assoc()) {
+            if ($row['status'] === 'ativa') $totalAtivos++;
+            $agendamentos[] = $row;
+        }
+    }
+
+    // 4. Últimas leituras dos sensores ultrassônicos (Vaga 01 e Vaga 02)
+    $resL = $conn->query("SELECT id, vaga, distancia, data_hora FROM leituras ORDER BY id DESC LIMIT 50");
+    $leituras = [];
+    if ($resL) {
+        while ($row = $resL->fetch_assoc()) {
+            $leituras[] = $row;
+        }
+    }
+
+    // 5. Histórico de Notificações / E-mails disparados
+    $resN = $conn->query("SELECT id, id_usuario, destinatario, assunto, mensagem, criado_em, lido FROM notificacoes_email ORDER BY id DESC LIMIT 50");
+    $notificacoes = [];
+    if ($resN) {
+        while ($row = $resN->fetch_assoc()) {
+            $notificacoes[] = $row;
+        }
+    }
+
+    // 6. Resumo numérico / KPIs
+    $metricas = [
+        "total_usuarios"     => count($usuarios),
+        "total_veiculos"     => count($veiculos),
+        "total_agendamentos" => count($agendamentos),
+        "agendamentos_ativos"=> $totalAtivos,
+        "total_emails"       => count($notificacoes),
+        "total_leituras"     => count($leituras)
+    ];
+
+    echo json_encode([
+        "sucesso"      => true,
+        "metricas"     => $metricas,
+        "usuarios"     => $usuarios,
+        "veiculos"     => $veiculos,
+        "agendamentos" => $agendamentos,
+        "leituras"     => $leituras,
+        "notificacoes" => $notificacoes
+    ]);
+    exit;
+}
+
 $conn->close();
 ?>

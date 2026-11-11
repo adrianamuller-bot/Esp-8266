@@ -1,0 +1,679 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>SENAI Parking | Administração Geral</title>
+    <link rel="stylesheet" href="css/style.css?v=20261110_admin1">
+    <script>
+      (function() {
+        if (localStorage.getItem('senaiTheme') === 'dark') {
+          document.documentElement.classList.add('dark-mode');
+        }
+      })();
+    </script>
+    <style>
+      .admin-tabs {
+        display: flex;
+        gap: 8px;
+        border-bottom: 2px solid var(--line);
+        margin: 20px 0 24px 0;
+        overflow-x: auto;
+        padding-bottom: 2px;
+      }
+      .admin-tab-btn {
+        background: transparent;
+        border: none;
+        outline: none;
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--muted);
+        padding: 10px 18px;
+        cursor: pointer;
+        border-radius: 8px 8px 0 0;
+        transition: all 0.2s ease;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        border-bottom: 3px solid transparent;
+        margin-bottom: -2px;
+      }
+      .admin-tab-btn:hover {
+        color: var(--blue);
+        background: rgba(0, 110, 183, 0.05);
+      }
+      .admin-tab-btn.active {
+        color: var(--blue);
+        border-bottom: 3px solid var(--blue);
+        background: rgba(0, 110, 183, 0.08);
+      }
+      .admin-tab-btn .badge-pill {
+        background: var(--line);
+        color: var(--ink);
+        padding: 2px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      .admin-tab-btn.active .badge-pill {
+        background: var(--blue);
+        color: #fff;
+      }
+      .tab-panel {
+        display: none;
+        animation: fadeIn 0.25s ease-out;
+      }
+      .tab-panel.active {
+        display: block;
+      }
+      @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(6px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .search-box {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 16px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .search-input {
+        flex: 1;
+        min-width: 240px;
+        padding: 10px 14px;
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        font-size: 14px;
+        background: #fff;
+        color: var(--ink);
+      }
+      .dark-mode .search-input {
+        background: #1a222d;
+        border-color: #334155;
+        color: #f1f5f9;
+      }
+      .admin-table-wrap {
+        background: #fff;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: var(--shadow);
+      }
+      .dark-mode .admin-table-wrap {
+        background: #111827;
+        border-color: #1f2937;
+      }
+      .admin-table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left;
+        font-size: 14px;
+      }
+      .admin-table th {
+        background: #f8fafc;
+        padding: 12px 16px;
+        font-weight: 700;
+        color: var(--muted);
+        border-bottom: 1px solid var(--line);
+        font-size: 13px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+      }
+      .dark-mode .admin-table th {
+        background: #1f2937;
+        color: #94a3b8;
+        border-color: #374151;
+      }
+      .admin-table td {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--line);
+        color: var(--ink);
+      }
+      .dark-mode .admin-table td {
+        border-color: #1f2937;
+        color: #e2e8f0;
+      }
+      .admin-table tbody tr:hover {
+        background: rgba(0, 110, 183, 0.03);
+      }
+      .dark-mode .admin-table tbody tr:hover {
+        background: rgba(255, 255, 255, 0.03);
+      }
+      .status-pill {
+        display: inline-block;
+        padding: 4px 10px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: bold;
+      }
+      .status-pill.green {
+        background: #dcfce7;
+        color: #15803d;
+      }
+      .status-pill.yellow {
+        background: #fef9c3;
+        color: #854d0e;
+      }
+      .status-pill.red {
+        background: #fee2e2;
+        color: #b91c1c;
+      }
+      .status-pill.blue {
+        background: #dbeafe;
+        color: #1d4ed8;
+      }
+      .dark-mode .status-pill.green { background: #14532d; color: #86efac; }
+      .dark-mode .status-pill.yellow { background: #713f12; color: #fef08a; }
+      .dark-mode .status-pill.red { background: #7f1d1d; color: #fca5a5; }
+      .dark-mode .status-pill.blue { background: #1e3a8a; color: #93c5fd; }
+      .security-banner {
+        background: linear-gradient(135deg, #004b82, #006eb7);
+        color: #fff;
+        padding: 16px 20px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        box-shadow: 0 4px 20px rgba(0, 75, 130, 0.25);
+      }
+      .security-banner .icon {
+        font-size: 28px;
+      }
+      .security-banner strong {
+        display: block;
+        font-size: 16px;
+        margin-bottom: 2px;
+      }
+      .security-banner small {
+        opacity: 0.9;
+        font-size: 13px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <a class="brand" href="painel.html">
+        <div class="brand-mark">S</div>
+        <div>SENAI Parking<small>Blumenau • Administração</small></div>
+      </a>
+      <nav class="topnav">
+        <a href="painel.html">Painel</a>
+        <a href="agendar.html">Agendar</a>
+        <a href="veiculos.html">Meu veículo</a>
+        <a href="minhas-vagas.html">Minhas vagas</a>
+        <a href="sancoes.html">Sanções</a>
+        <a href="perfil.html">Meu perfil</a>
+        <a class="active" href="admin.html">Painel Admin</a>
+      </nav>
+      <div class="topbar-right">
+        <button type="button" class="btn-theme-toggle" id="themeToggle" onclick="alternarTema()" title="Alternar modo claro / escuro">🌙</button>
+        <a href="perfil.html" class="user-badge" id="userBadge" style="text-decoration:none; cursor:pointer;" title="Ver meu perfil">
+          <div class="user-badge-icon" id="userBadgeIcon">A</div>
+          <span id="userBadgeName">Administrador</span>
+        </a>
+        <button type="button" class="btn-sair" onclick="fazerLogout()">Sair</button>
+      </div>
+    </div>
+
+    <div class="page">
+      <main class="content" style="max-width:1300px; margin:0 auto; width:100%;">
+        <div class="title-row" style="align-items:flex-start;">
+          <div>
+            <div class="eyebrow">Acesso Exclusivo da Gestão</div>
+            <div class="title">Painel Administrativo Geral</div>
+            <div class="subtitle">Visão panorâmica e centralizada de todos os registros do sistema SENAI Parking em tempo real.</div>
+          </div>
+          <div>
+            <button type="button" class="btn btn-primary" onclick="carregarDadosAdmin(true)" title="Recarregar dados do banco de dados">
+              🔄 Atualizar Dados
+            </button>
+          </div>
+        </div>
+
+        <!-- Banner de Política de Privacidade e Proteção de Senhas -->
+        <div class="security-banner">
+          <div style="display:flex; align-items:center; gap:14px;">
+            <div class="icon">🛡️</div>
+            <div>
+              <strong>Segurança e Privacidade de Credenciais (LGPD)</strong>
+              <small>Por conformidade com as diretrizes de segurança, nenhuma senha de usuário é trafegada ou exposta nesta tela administrativa. As senhas permanecem restritas ao desenvolvedor e armazenadas sob criptografia no servidor.</small>
+            </div>
+          </div>
+          <span class="status-pill blue" style="background:rgba(255,255,255,0.2); color:#fff; border:1px solid rgba(255,255,255,0.4);">🔒 Senhas Protegidas</span>
+        </div>
+
+        <!-- Cards com Métricas Gerais / KPIs -->
+        <div class="grid g4">
+          <div class="card pad metric blue">
+            <div class="label">Total de Usuários</div>
+            <div class="num" id="kpiUsuarios">0</div>
+            <div class="foot">Contas cadastradas</div>
+          </div>
+          <div class="card pad metric green">
+            <div class="label">Total de Veículos</div>
+            <div class="num" id="kpiVeiculos">0</div>
+            <div class="foot">Veículos vinculados</div>
+          </div>
+          <div class="card pad metric yellow">
+            <div class="label">Agendamentos</div>
+            <div class="num" id="kpiAgendamentos">0</div>
+            <div class="foot"><span id="kpiAgendamentosAtivos">0</span> reservas ativas</div>
+          </div>
+          <div class="card pad metric red">
+            <div class="label">Leituras dos Sensores</div>
+            <div class="num" id="kpiLeituras">0</div>
+            <div class="foot">Ultrassônicos (Vaga 01 & 02)</div>
+          </div>
+        </div>
+
+        <!-- Abas de Navegação das Seções Administrativas -->
+        <div class="admin-tabs">
+          <button class="admin-tab-btn active" onclick="trocarAbaAdmin('usuarios', this)">
+            👤 Usuários <span class="badge-pill" id="badgeUsuarios">0</span>
+          </button>
+          <button class="admin-tab-btn" onclick="trocarAbaAdmin('veiculos', this)">
+            🚗 Veículos <span class="badge-pill" id="badgeVeiculos">0</span>
+          </button>
+          <button class="admin-tab-btn" onclick="trocarAbaAdmin('agendamentos', this)">
+            📅 Agendamentos <span class="badge-pill" id="badgeAgendamentos">0</span>
+          </button>
+          <button class="admin-tab-btn" onclick="trocarAbaAdmin('leituras', this)">
+            📡 Leituras IoT / Sensores <span class="badge-pill" id="badgeLeituras">0</span>
+          </button>
+          <button class="admin-tab-btn" onclick="trocarAbaAdmin('notificacoes', this)">
+            📬 Notificações & E-mails <span class="badge-pill" id="badgeNotificacoes">0</span>
+          </button>
+        </div>
+
+        <!-- 1. PAINEL DE USUÁRIOS -->
+        <div id="tabUsuarios" class="tab-panel active">
+          <div class="search-box">
+            <input type="text" id="filtroUsuarios" class="search-input" placeholder="🔍 Pesquisar por nome, usuário ou e-mail..." oninput="filtrarUsuarios()">
+            <span style="font-size:13px; color:var(--muted);" id="contagemFiltroUsuarios"></span>
+          </div>
+          <div class="admin-table-wrap">
+            <div style="overflow-x:auto;">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Nome Completo</th>
+                    <th>Login / Usuário</th>
+                    <th>E-mail</th>
+                    <th>Data de Cadastro</th>
+                    <th>Segurança</th>
+                  </tr>
+                </thead>
+                <tbody id="tabelaUsuariosBody">
+                  <tr><td colspan="6" style="text-align:center; padding:24px; color:var(--muted);">Carregando usuários...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. PAINEL DE VEÍCULOS -->
+        <div id="tabVeiculos" class="tab-panel">
+          <div class="search-box">
+            <input type="text" id="filtroVeiculos" class="search-input" placeholder="🔍 Pesquisar por placa, marca, modelo ou proprietário..." oninput="filtrarVeiculos()">
+            <span style="font-size:13px; color:var(--muted);" id="contagemFiltroVeiculos"></span>
+          </div>
+          <div class="admin-table-wrap">
+            <div style="overflow-x:auto;">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Placa</th>
+                    <th>Marca</th>
+                    <th>Modelo</th>
+                    <th>Cor</th>
+                    <th>Proprietário</th>
+                    <th>Cadastrado em</th>
+                  </tr>
+                </thead>
+                <tbody id="tabelaVeiculosBody">
+                  <tr><td colspan="7" style="text-align:center; padding:24px; color:var(--muted);">Carregando veículos...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. PAINEL DE AGENDAMENTOS -->
+        <div id="tabAgendamentos" class="tab-panel">
+          <div class="search-box">
+            <input type="text" id="filtroAgendamentos" class="search-input" placeholder="🔍 Pesquisar agendamentos por vaga, usuário, placa..." oninput="filtrarAgendamentos()">
+            <span style="font-size:13px; color:var(--muted);" id="contagemFiltroAgendamentos"></span>
+          </div>
+          <div class="admin-table-wrap">
+            <div style="overflow-x:auto;">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Vaga / Bloco</th>
+                    <th>Usuário / Solicitante</th>
+                    <th>Veículo / Placa</th>
+                    <th>Data Reservada</th>
+                    <th>Horário</th>
+                    <th>Status</th>
+                    <th>Registro no Sistema</th>
+                  </tr>
+                </thead>
+                <tbody id="tabelaAgendamentosBody">
+                  <tr><td colspan="8" style="text-align:center; padding:24px; color:var(--muted);">Carregando agendamentos...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 4. PAINEL DE LEITURAS IOT / SENSORES -->
+        <div id="tabLeituras" class="tab-panel">
+          <div class="search-box">
+            <input type="text" id="filtroLeituras" class="search-input" placeholder="🔍 Filtrar por vaga (Vaga 01, Vaga 02)..." oninput="filtrarLeituras()">
+            <span style="font-size:13px; color:var(--muted);" id="contagemFiltroLeituras"></span>
+          </div>
+          <div class="admin-table-wrap">
+            <div style="overflow-x:auto;">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID Leitura</th>
+                    <th>Vaga Monitorada</th>
+                    <th>Distância Medida</th>
+                    <th>Estado Interpretado</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody id="tabelaLeiturasBody">
+                  <tr><td colspan="5" style="text-align:center; padding:24px; color:var(--muted);">Carregando leituras do ESP8266...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- 5. PAINEL DE NOTIFICAÇÕES E E-MAILS -->
+        <div id="tabNotificacoes" class="tab-panel">
+          <div class="search-box">
+            <input type="text" id="filtroNotificacoes" class="search-input" placeholder="🔍 Pesquisar por assunto ou destinatário..." oninput="filtrarNotificacoes()">
+            <span style="font-size:13px; color:var(--muted);" id="contagemFiltroNotificacoes"></span>
+          </div>
+          <div class="admin-table-wrap">
+            <div style="overflow-x:auto;">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Destinatário</th>
+                    <th>Assunto</th>
+                    <th>Mensagem (Resumo)</th>
+                    <th>Data de Disparo</th>
+                  </tr>
+                </thead>
+                <tbody id="tabelaNotificacoesBody">
+                  <tr><td colspan="5" style="text-align:center; padding:24px; color:var(--muted);">Carregando notificações enviadas...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </main>
+    </div>
+
+    <div id="toast" class="toast"></div>
+
+    <script src="js/app.js?v=20261110_admin1"></script>
+    <script>
+      let adminData = {
+        usuarios: [],
+        veiculos: [],
+        agendamentos: [],
+        leituras: [],
+        notificacoes: []
+      };
+
+      function trocarAbaAdmin(abaId, btn) {
+        document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.admin-tab-btn').forEach(b => b.classList.remove('active'));
+        
+        const alvo = document.getElementById('tab' + abaId.charAt(0).toUpperCase() + abaId.slice(1));
+        if (alvo) alvo.classList.add('active');
+        if (btn) btn.classList.add('active');
+      }
+
+      function carregarDadosAdmin(comToast) {
+        fetch('acoes.php?acao=admin_dados_gerais')
+          .then(r => r.json())
+          .then(data => {
+            if (!data || !data.sucesso) {
+              if (comToast) toast('Erro ao carregar dados administrativos.');
+              return;
+            }
+
+            adminData = data;
+
+            // Atualiza KPIs
+            const m = data.metricas || {};
+            document.getElementById('kpiUsuarios').textContent = m.total_usuarios || data.usuarios.length;
+            document.getElementById('kpiVeiculos').textContent = m.total_veiculos || data.veiculos.length;
+            document.getElementById('kpiAgendamentos').textContent = m.total_agendamentos || data.agendamentos.length;
+            document.getElementById('kpiAgendamentosAtivos').textContent = m.agendamentos_ativos || 0;
+            document.getElementById('kpiLeituras').textContent = m.total_leituras || data.leituras.length;
+
+            // Badges das abas
+            document.getElementById('badgeUsuarios').textContent = data.usuarios.length;
+            document.getElementById('badgeVeiculos').textContent = data.veiculos.length;
+            document.getElementById('badgeAgendamentos').textContent = data.agendamentos.length;
+            document.getElementById('badgeLeituras').textContent = data.leituras.length;
+            document.getElementById('badgeNotificacoes').textContent = data.notificacoes.length;
+
+            // Renderiza tabelas
+            renderUsuarios(data.usuarios);
+            renderVeiculos(data.veiculos);
+            renderAgendamentos(data.agendamentos);
+            renderLeituras(data.leituras);
+            renderNotificacoes(data.notificacoes);
+
+            if (comToast) toast('Dados administrativos atualizados!');
+          })
+          .catch(() => {
+            if (comToast) toast('Erro de comunicação com o servidor.');
+          });
+      }
+
+      // Renderizadores
+      function renderUsuarios(lista) {
+        const tbody = document.getElementById('tabelaUsuariosBody');
+        if (!tbody) return;
+        if (!lista.length) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:var(--muted);">Nenhum usuário encontrado.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = lista.map(u => `
+          <tr>
+            <td><strong>#${u.id}</strong></td>
+            <td><strong>${u.nome || '—'}</strong></td>
+            <td><span class="status-pill blue">@${u.usuario}</span></td>
+            <td>${u.email}</td>
+            <td>${u.criado_em || '—'}</td>
+            <td><span class="status-pill yellow" title="A senha não é exposta por segurança">🔒 Oculta (Segura)</span></td>
+          </tr>
+        `).join('');
+      }
+
+      function renderVeiculos(lista) {
+        const tbody = document.getElementById('tabelaVeiculosBody');
+        if (!tbody) return;
+        if (!lista.length) {
+          tbody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:20px; color:var(--muted);">Nenhum veículo cadastrado.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = lista.map(v => `
+          <tr>
+            <td><strong>#${v.id}</strong></td>
+            <td><span class="status-pill green" style="font-family:monospace; font-size:13px;">${v.placa}</span></td>
+            <td><strong>${v.marca}</strong></td>
+            <td>${v.modelo}</td>
+            <td>${v.cor}</td>
+            <td>${v.proprietario} <small style="color:var(--muted);">(@${v.login_proprietario})</small></td>
+            <td>${v.data_cadastro || '—'}</td>
+          </tr>
+        `).join('');
+      }
+
+      function renderAgendamentos(lista) {
+        const tbody = document.getElementById('tabelaAgendamentosBody');
+        if (!tbody) return;
+        if (!lista.length) {
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; padding:20px; color:var(--muted);">Nenhum agendamento registrado.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = lista.map(a => {
+          const isAtiva = a.status === 'ativa';
+          const pillClass = isAtiva ? 'yellow' : 'blue';
+          const statusTxt = isAtiva ? '🟡 Ativa (Reservada)' : 'Concluída';
+          const veicInfo = (a.veiculo_marca ? `${a.veiculo_marca} ` : '') + (a.veiculo_modelo || '');
+          return `
+            <tr>
+              <td><strong>#${a.id}</strong></td>
+              <td><strong>${a.vaga || 'Vaga 01'}</strong> <small style="color:var(--muted);">(Bloco ${a.bloco || 'H'})</small></td>
+              <td>${a.nome || '—'}</td>
+              <td>
+                <span class="status-pill green" style="font-family:monospace;">${a.placa}</span>
+                ${veicInfo ? `<div style="font-size:12px; color:var(--muted); margin-top:2px;">${veicInfo}</div>` : ''}
+              </td>
+              <td>${a.data_reserva || '—'}</td>
+              <td><strong>${a.horario || '—'}</strong></td>
+              <td><span class="status-pill ${pillClass}">${statusTxt}</span></td>
+              <td style="font-size:13px; color:var(--muted);">${a.data_hora}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      function renderLeituras(lista) {
+        const tbody = document.getElementById('tabelaLeiturasBody');
+        if (!tbody) return;
+        if (!lista.length) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--muted);">Nenhuma leitura gravada ainda.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = lista.map(l => {
+          const dist = parseFloat(l.distancia);
+          let estado = '🟡 Indeterminado';
+          let pill = 'blue';
+          if (dist <= 8.0) {
+            estado = '🔴 Ocupada (Veículo Presente)';
+            pill = 'red';
+          } else {
+            estado = '🟢 Livre';
+            pill = 'green';
+          }
+          return `
+            <tr>
+              <td><strong>#${l.id}</strong></td>
+              <td><strong>${l.vaga || 'Vaga 01'}</strong></td>
+              <td><strong>${dist.toFixed(1)} cm</strong></td>
+              <td><span class="status-pill ${pill}">${estado}</span></td>
+              <td style="font-size:13px; color:var(--muted);">${l.data_hora}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      function renderNotificacoes(lista) {
+        const tbody = document.getElementById('tabelaNotificacoesBody');
+        if (!tbody) return;
+        if (!lista.length) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px; color:var(--muted);">Nenhuma notificação enviada.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = lista.map(n => {
+          // Remove tags html simples para resumo
+          const resumo = (n.mensagem || '').replace(/<[^>]*>?/gm, ' ').substring(0, 75) + '...';
+          return `
+            <tr>
+              <td><strong>#${n.id}</strong></td>
+              <td><strong>${n.destinatario}</strong></td>
+              <td>${n.assunto}</td>
+              <td style="font-size:13px; color:var(--muted);" title="${n.mensagem ? n.mensagem.replace(/"/g, '&quot;') : ''}">${resumo}</td>
+              <td style="font-size:13px; color:var(--muted);">${n.criado_em}</td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Filtros em tempo real
+      function filtrarUsuarios() {
+        const termo = document.getElementById('filtroUsuarios').value.toLowerCase();
+        const filtrados = adminData.usuarios.filter(u => 
+          (u.nome && u.nome.toLowerCase().includes(termo)) ||
+          (u.usuario && u.usuario.toLowerCase().includes(termo)) ||
+          (u.email && u.email.toLowerCase().includes(termo))
+        );
+        renderUsuarios(filtrados);
+        document.getElementById('contagemFiltroUsuarios').textContent = `${filtrados.length} de ${adminData.usuarios.length}`;
+      }
+
+      function filtrarVeiculos() {
+        const termo = document.getElementById('filtroVeiculos').value.toLowerCase();
+        const filtrados = adminData.veiculos.filter(v => 
+          (v.placa && v.placa.toLowerCase().includes(termo)) ||
+          (v.marca && v.marca.toLowerCase().includes(termo)) ||
+          (v.modelo && v.modelo.toLowerCase().includes(termo)) ||
+          (v.proprietario && v.proprietario.toLowerCase().includes(termo))
+        );
+        renderVeiculos(filtrados);
+        document.getElementById('contagemFiltroVeiculos').textContent = `${filtrados.length} de ${adminData.veiculos.length}`;
+      }
+
+      function filtrarAgendamentos() {
+        const termo = document.getElementById('filtroAgendamentos').value.toLowerCase();
+        const filtrados = adminData.agendamentos.filter(a => 
+          (a.nome && a.nome.toLowerCase().includes(termo)) ||
+          (a.placa && a.placa.toLowerCase().includes(termo)) ||
+          (a.vaga && a.vaga.toLowerCase().includes(termo)) ||
+          (a.status && a.status.toLowerCase().includes(termo))
+        );
+        renderAgendamentos(filtrados);
+        document.getElementById('contagemFiltroAgendamentos').textContent = `${filtrados.length} de ${adminData.agendamentos.length}`;
+      }
+
+      function filtrarLeituras() {
+        const termo = document.getElementById('filtroLeituras').value.toLowerCase();
+        const filtrados = adminData.leituras.filter(l => 
+          (l.vaga && l.vaga.toLowerCase().includes(termo))
+        );
+        renderLeituras(filtrados);
+        document.getElementById('contagemFiltroLeituras').textContent = `${filtrados.length} de ${adminData.leituras.length}`;
+      }
+
+      function filtrarNotificacoes() {
+        const termo = document.getElementById('filtroNotificacoes').value.toLowerCase();
+        const filtrados = adminData.notificacoes.filter(n => 
+          (n.destinatario && n.destinatario.toLowerCase().includes(termo)) ||
+          (n.assunto && n.assunto.toLowerCase().includes(termo))
+        );
+        renderNotificacoes(filtrados);
+        document.getElementById('contagemFiltroNotificacoes').textContent = `${filtrados.length} de ${adminData.notificacoes.length}`;
+      }
+
+      // Inicialização
+      document.addEventListener('DOMContentLoaded', () => {
+        carregarDadosAdmin(false);
+        // Atualiza automaticamente a cada 10 segundos
+        setInterval(() => carregarDadosAdmin(false), 10000);
+      });
+    </script>
+  </body>
+</html>
